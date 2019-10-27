@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "org.elasticsearch.gradle:build-tools:6.0.1"
+    classpath "org.elasticsearch.gradle:build-tools:6.2.4"
   }
 }
 apply plugin: 'elasticsearch.esplugin'
