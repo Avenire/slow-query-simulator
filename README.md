@@ -1,6 +1,6 @@
 # Slow Query Simulator #
 ## ES Version ##
-6.0.1
+6.2.4
 
 Adjust `dependencies { classpath "org.elasticsearch.gradle:build-tools:6.0.1" }` in `build.gradle` to change.
 
@@ -18,13 +18,15 @@ Assuming the zip is hosted at `http://192.168.44.10:7777/slow-query-simulator.zi
     {
       "name": "custom-plugin",
       "url": "http://192.168.44.10:7777/slow-query-simulator.zip",
-      "elasticsearch_version": "6.0.1"
+      "elasticsearch_version": "6.2.4"
     }
   ]
 ```
 
 ## Create An Index ##
 `curl --user "elastic:${PASSWORD}" -H 'Content-Type: application/json' -XPUT "https://${CLUSTER}/${INDEX}/test/1" -d '{"is-slow": true }'`
+
+Note: if you use your index make sure it is not empty.
 
 ## Execute A Slow Query ##
 `sleepSec` is the number of seconds to sleep in the query handler. `slow` identifies the plugin.
