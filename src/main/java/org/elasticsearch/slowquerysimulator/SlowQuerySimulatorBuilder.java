@@ -47,9 +47,9 @@ public class SlowQuerySimulatorBuilder extends AbstractQueryBuilder<SlowQuerySim
      */
     // The name of the query
     public static final String NAME = "slow";
-    private int sleepSec;
+    private double sleepSec;
 
-    public void setSleepSec(int sleepSec) { this.sleepSec = sleepSec; }
+    public void setSleepSec(double sleepSec) { this.sleepSec = sleepSec; }
     /**
      * Read from a stream.
      */
@@ -80,7 +80,7 @@ public class SlowQuerySimulatorBuilder extends AbstractQueryBuilder<SlowQuerySim
 
     // Parse the sleepSec field from the "slow" object as an Int
     static {
-        PARSER.declareInt(SlowQuerySimulatorBuilder::setSleepSec, new ParseField("sleepSec"));
+        PARSER.declareDouble(SlowQuerySimulatorBuilder::setSleepSec, new ParseField("sleepSec"));
     }
 
     @Override
@@ -89,6 +89,11 @@ public class SlowQuerySimulatorBuilder extends AbstractQueryBuilder<SlowQuerySim
             @Override
             public Weight createWeight(IndexSearcher searcher, boolean needsScores, float boost) throws IOException {
                 return new Weight(this) {
+                    @Override
+                    public boolean isCacheable(LeafReaderContext ctx) {
+                        return false;
+                    }
+
                     @Override
                     public void extractTerms(Set<Term> terms) {
                     }
@@ -102,7 +107,7 @@ public class SlowQuerySimulatorBuilder extends AbstractQueryBuilder<SlowQuerySim
                     public Scorer scorer(LeafReaderContext context) throws IOException {
                         // NOTE(stu): This is where we sleep
                         try {
-                            Thread.sleep(sleepSec * 1000);
+                            Thread.sleep((long)Math.ceil(sleepSec * 1000));
                         } catch (InterruptedException err) {
                             throw new RuntimeException(err);
                         }
